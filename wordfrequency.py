@@ -108,10 +108,16 @@ if args.subcommand == 'read':
                     sys.stdout.write(" {}".format(word))
                     continue
 
-                word = word.lower()
-                word = wordnet.morphy(word) or word
-                this_word_frequency = wordfrequency.get(word, 0)
-                if this_word_frequency < 10000:
-                    sys.stdout.write(" <\033[31m{}\033[0m:{}>".format(word, this_word_frequency))
+                has_uppercase = False
+                if any(x.isupper() for x in word):
+                    has_uppercase = True
+
+                w = word.lower()
+                w = wordnet.morphy(w) or w
+                this_word_frequency = wordfrequency.get(w, 0)
+                if has_uppercase and this_word_frequency < 10000:
+                    sys.stdout.write(" {}".format(w))
+                elif this_word_frequency < 30000:
+                    sys.stdout.write(" <\033[31m{}\033[0m:{}>".format(w, this_word_frequency))
                 else:
-                    sys.stdout.write(" {}".format(word))
+                    sys.stdout.write(" {}".format(w))
